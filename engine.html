@@ -1,0 +1,305 @@
+<script src='https://d3js.org/d3.v5.min.js'></script>
+<script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
+<style> 
+circle {stroke: black;} 
+#tooltip {
+    opacity: 0;
+    position: absolute;
+    text-align: center;
+    width: 300px; height:40px;
+    background: white;
+    border: 0px;
+}
+</style>
+<html>
+    <body onload='init()'>
+        <p>
+            <a href="index.html">Back To Main Page </a>
+            &nbsp
+            <a href="index.html">Prev Page  </a>
+            &nbsp
+            <a href="brand.html">Next Page  </a>
+        </p>
+        <h2>
+            The relationship between number of engine cylinders and MPG
+        </h2>
+        <p>
+            Both average highway MPG and average city MPG are in logarithmic scale, roll the slider bar below to change the number of Engine Cylinders
+        </p>
+        <br>
+        <div>
+            <input type="range" min="0" max="12" step="2" id="slider" value="0"  />
+            <label id="indicator"> 0 </label>
+        </div>
+        <!-- <input type="range" min="0" max="12" step="2" id="slider" value="0"  /> -->
+        
+        <svg width=1300 height=600> 
+            d3.annotation()
+            <rect></rect>
+        </svg>
+        <div id="tooltip"></div>
+        <script>
+            var groupedData = "";
+            var svg = "";
+            var xScale = "";
+            var yScale = "";
+            var color = "";
+            var xAxis = "";
+            var yAxis = "";
+            // var annotations;
+            // var annotation;
+            const annotations = new Map();
+            async function init() {
+                const alldata = await d3.csv("https://flunky.github.io/cars2017.csv");
+                // console.log(alldata)
+                groupedData = d3.nest().key(function (d) {return d.EngineCylinders}).map(alldata);
+                console.log(groupedData.get("2"))
+
+                // const data = await d3.csv("https://flunky.github.io/cars2017.csv");
+                svg = d3.select("svg");
+                // svg.select("rect").
+                // rect.attr("x", 40).attr("y", 50).attr("height", 40).attr("width", 50).attr("fill", "blue")
+
+                xScale = d3.scaleLog().domain([10, 150]).range([0, 500]);
+                yScale = d3.scaleLog().domain([10, 150]).range([500, 0]);
+                color = d3.scaleLinear().domain([0, 12]).range(["orange", "blue"]);
+
+                xAxis = d3.axisBottom(xScale).tickValues([10, 20, 50, 100]).tickFormat(d3.format("~s"));
+                yAxis = d3.axisLeft(yScale).tickValues([10, 20, 50, 100]).tickFormat(d3.format("~s"));
+
+                // buildAnnotation()
+                anno_x = [800, 585]
+                anno_y = [130, 330]
+                // anno_title = [
+                //     "0 Engine Cylinders Cars"
+                // ]
+                annotations.set("0", 
+                [{
+                    type: d3.annotationCalloutCircle,
+                    note: {
+                        label: "Looks like electric cars does not rely on engine cylinder; In addition, electritic cars have highest MPG value than other cars",
+                        title: "0 Engine Cylinders Cars",
+                        wrap: 190
+                    },
+                    //settings for the subject, in this case the circle radius
+                    subject: {
+                        radius: 80
+                    },
+                    x: 800,
+                    y: 130,
+                    dy: 137,
+                    dx: 102
+                    }].map(function(d){ d.color = "#E8336D"; return d})
+                )
+                annotations.set("2", 
+                [{
+                    type: d3.annotationCalloutCircle,
+                    note: {
+                        label: "Interesting Fact: only 1 car model in the dataset has 2 engine cylinders",
+                        title: "2 Engine Cylinders Cars",
+                        wrap: 190
+                    },
+                    //settings for the subject, in this case the circle radius
+                    subject: {
+                        radius: 30
+                    },
+                    x: 585,
+                    y: 330,
+                    dy: 137,
+                    dx: 102
+                    },].map(function(d){ d.color = "#E8336D"; return d})
+                )
+                annotations.set("4", 
+                [{
+                    type: d3.annotationCalloutCircle,
+                    note: {
+                        label: "In this small group of data, we can obtain a navie found: Diesel cars have higher MPG value than Gas cars",
+                        title: "4 Engine Cylinders Cars",
+                        wrap: 290
+                    },
+                    //settings for the subject, in this case the circle radius
+                    subject: {
+                        radius: 80
+                    },
+                    x: 525,
+                    y: 330,
+                    dy: 137,
+                    dx: 102
+                    },].map(function(d){ d.color = "#E8336D"; return d})
+                )
+
+                annotations.set("6", 
+                [{
+                    type: d3.annotationCalloutCircle,
+                    note: {
+                        label: "In this small group of data, we can obtain a navie found: Diesel cars have higher MPG value than Gas cars",
+                        title: "6 Engine Cylinders Cars",
+                        wrap: 290
+                    },
+                    //settings for the subject, in this case the circle radius
+                    subject: {
+                        radius: 90
+                    },
+                    x: 435,
+                    y: 400,
+                    dy: 37,
+                    dx: 150
+                    },].map(function(d){ d.color = "#E8336D"; return d})
+                )
+
+                annotations.set("8", 
+                [{
+                    type: d3.annotationCalloutCircle,
+                    note: {
+                        label: "All cars with 8 and more engine cylinders are gasoline cars",
+                        title: "8 Engine Cylinders Cars",
+                        wrap: 290
+                    },
+                    //settings for the subject, in this case the circle radius
+                    subject: {
+                        radius: 90
+                    },
+                    x: 435,
+                    y: 400,
+                    dy: 37,
+                    dx: 150
+                    },].map(function(d){ d.color = "#E8336D"; return d})
+                )
+
+                annotations.set("10", 
+                [{
+                    type: d3.annotationCalloutCircle,
+                    note: {
+                        label: "All cars with 8 and more engine cylinders are gasoline cars",
+                        title: "8 Engine Cylinders Cars",
+                        wrap: 290
+                    },
+                    //settings for the subject, in this case the circle radius
+                    subject: {
+                        radius: 50
+                    },
+                    x: 385,
+                    y: 430,
+                    dy: 37,
+                    dx: 150
+                    },].map(function(d){ d.color = "#E8336D"; return d})
+                )
+
+                annotations.set("12", 
+                [{
+                    type: d3.annotationCalloutCircle,
+                    note: {
+                        label: "All cars with 8 and more engine cylinders are gasoline cars",
+                        title: "8 Engine Cylinders Cars",
+                        wrap: 290
+                    },
+                    //settings for the subject, in this case the circle radius
+                    subject: {
+                        radius: 50
+                    },
+                    x: 385,
+                    y: 430,
+                    dy: 37,
+                    dx: 150
+                    },].map(function(d){ d.color = "#E8336D"; return d})
+                )
+
+                svg.append("g")
+                    .attr("transform", "translate(350,550)")
+                    .call(xAxis)
+                    .append("text")
+                    .style("font-size","20px")
+                    .attr("y", 5)
+                    .attr("x", 550)
+                    .attr("dy", ".47em")                        
+                    .style("text-anchor", "start")
+                    .style("fill", "#004669")
+                    .style("font-weight", "bold")
+                    .text("Average City MPG");
+
+                svg.append("g")
+                    .attr("transform", "translate(350,50)")
+                    .call(yAxis)
+                    .append("text")
+                    .style("font-size","20px")
+                    .attr("y", -20)
+                    .attr("x", -90)
+                    .attr("dx", ".47em")                        
+                    .style("text-anchor", "start")
+                    .style("fill", "#004669")
+                    .style("font-weight", "bold")
+                    .text("Average HighWay MPG");
+                    var tooltip = d3.select("#tooltip");
+                    // changeScene(0)
+                    // d3.select("svg")
+                    //     .append("g")
+                    //     .attr("class", "annotation-group")
+                    //     .call(d3.annotation().annotations(annotations.get("0")))
+                    // d3.select("svg")
+                    //     .append("g")
+                    //     .attr("class", "annotation-group")
+                    //     .call(d3.annotation().annotations(annotations.get("0")))
+                changeScene(0)
+                // updateAnnotation("0")
+                // const makeAnnotations = d3.annotation().annotations(annotations.get("0"))
+
+                // d3.select("svg")
+                //     .append("g")
+                //     .attr("class", "annotation-group")
+                //     .call(makeAnnotations)
+            }
+            function changeScene(num_of_engine_cylinders) {
+                // console.log(num_of_engine_cylinders)
+                // console.log(groupedData.get(num_of_engine_cylinders))
+                const data = groupedData.get(num_of_engine_cylinders)
+                var tooltip = d3.select("#tooltip");
+                svg.selectAll("circle").remove();
+                svg.selectAll("circle")
+                    .data(data)
+                    .enter()
+                    .append("circle")
+                    .attr("cx", d => xScale(d["AverageCityMPG"]))
+                    .attr("cy", d => yScale(d["AverageHighwayMPG"]))
+                    .attr("r", 6)
+                    .attr("fill", d => color(d["EngineCylinders"]))
+                    .attr("transform", "translate(350,50)")
+                    // .on("mouseover", function(d, i) {
+                    //     tooltip.style("opacity", 1)
+                    //     // .transition().duration(200)
+                    //     .style("left", (d3.event.pageX) + "px")
+                    //     .style("top", (d3.event.pageY) + "px")
+                    //     .html(
+                    //         d.Make + " - " + d.Fuel + ""
+                    //     );
+                    // })
+                    // .on("mouseout", function() {tooltip.style("opacity", 0).transition().duration(200) }); 
+                    d3.select(".annotations").remove()
+                    // makeAnnotations = d3.annotation().annotations(annotations.get(num_of_engine_cylinders))
+
+                    d3.select("svg")
+                        .append("g")
+                        .attr("class", "annotation-group")
+                        .call(d3.annotation().annotations(annotations.get(num_of_engine_cylinders)))
+                }
+                // function updateAnnotation(idx) {
+                //     // d3.select(".annotations").remove()
+                //     const makeAnnotations = d3.annotation().annotations(annotations.get(idx))
+
+                //     d3.select("svg")
+                //         .append("g")
+                //         .attr("class", "annotation-group")
+                //         .call(makeAnnotations)
+                // }
+            </script>
+            <script>
+                var range = document.querySelector('#slider');
+                // var indicator = document.querySelector('#indicator')
+                var svg = d3.select(document.querySelector('#svg'));
+
+                range.addEventListener('input', function() {
+                    document.getElementById("indicator").innerHTML=this.value;
+                    changeScene(this.value)
+                }, false);
+            </script>
+    </body>
+</html>

@@ -1,0 +1,36 @@
+<script src='https://d3js.org/d3.v5.min.js'></script>
+<script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
+<style> 
+circle {stroke: black;} 
+#tooltip {
+    opacity: 0;
+    position: absolute;
+    text-align: center;
+    width: 300px; height:40px;
+    background: white;
+    border: 0px;
+}
+</style>
+<html>
+    <body onload='loadbrand()'>
+        <p>
+            <a href="index.html">Back To Main Page</a>
+            &nbsp
+            <a href="engine.html">Prev Page</a>
+            &nbsp
+            <a href="fuel.html">Next Page</a>
+        </p>
+        <!-- <a href="index.html">Back To Main Page</a> -->
+        <h3>Look at the figure below to see which brand's car can travel further with unit of fuel</h3>
+        <div>
+            <p>
+            Click the button below to switch between highway MPG and city MPG
+            <button id="bt1" onclick="update_by_brand(true)">Average Highway MPG</button>
+            <button id="bt2" onclick="update_by_brand(false)">Average City MPG</button>
+            </p>
+        </div>
+        <svg id="scenebrand" width=1300 height=1500> 
+        </svg>
+        <script src="func.js"></script>
+    </body>
+</html>

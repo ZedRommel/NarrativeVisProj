@@ -1,0 +1,33 @@
+<script src='https://d3js.org/d3.v5.min.js'></script>
+<script src="https://rawgit.com/susielu/d3-annotation/master/d3-annotation.min.js"></script>
+<style> 
+circle {stroke: black;} 
+#tooltip {
+    opacity: 0;
+    position: absolute;
+    text-align: center;
+    width: 300px; height:40px;
+    background: white;
+    border: 0px;
+}
+</style>
+<html>
+    <body onload='loadfuel()'>
+        <p>
+            <a href="index.html">Back To Main Page</a>
+            &nbsp
+            <a href="brand.html">Prev Page</a>
+        </p>
+        <h3> Which type of fuel enable cars better travel ability? </h3>
+        <div>
+            <p>
+             Click the button below to switch between highway MPG and city MPG
+            <button id="bt1" onclick="update_by_fuel(true)">Average Highway MPG</button>
+            <button id="bt2" onclick="update_by_fuel(false)">Average City MPG</button>
+            </p>
+        </div>
+        <svg id="scenefuel" width=1300 height=800> 
+        </svg>
+        <script src="func.js"></script>
+    </body>
+</html>
